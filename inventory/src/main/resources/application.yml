@@ -1,0 +1,36 @@
+spring:
+  application:
+    name: inventoryDB
+  datasource:
+    url: jdbc:mysql://localhost:3306/inventoryDB?createDatabaseIfNotExist=true
+    username: root
+    password: rootpassword
+    driver-class-name: com.mysql.cj.jdbc.Driver
+  jpa:
+    hibernate:
+      ddl-auto: update
+  kafka:
+    consumer:
+      bootstrap-servers: localhost:9092
+      group-id: inventory
+      auto-offset-reset: earliest
+      key-deserializer: org.apache.kafka.common.serialization.StringDeserializer
+      value-deserializer: org.springframework.kafka.support.serializer.ErrorHandlingDeserializer
+      properties:
+        spring:
+          deserializer:
+            value:
+              delegate:
+                class: org.springframework.kafka.support.serializer.JsonDeserializer
+          json:
+            trusted:
+              packages: '*'
+
+    template:
+      default-topic: order_default_topic
+eureka:
+  client:
+    service-url:
+      defaultZone: http://localhost:8761/eureka
+server:
+  port: 0
